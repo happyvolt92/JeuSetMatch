@@ -7,21 +7,40 @@
 //
 
 import XCTest
+@testable import JeuSetMatch
 
 class SetTestCase: XCTestCase {
-    func testExemple () {
-        XCTAssert(true)
+    var set = Set()
+
+    override func setUp() {
+        super.setUp()
+        set = Set()
     }
-    func testExemple() {
-        XCTAssert(false)
+
+    func createManyGames(_ count: Int, wonByPlayer player: Player) {
+        for _ in 1...count {
+            let game = Game()
+            game.winner = player
+            set.games.append(game)
+        }
     }
-    func testExemple2() {
-        XCTAssert(2*2 == 4)
+
+    func testGivenPlayerWinsByThreeGamesToTwo_WhenGettingScoreFromSet_ThenScoreShouldBeThreeToTwo() {
+        createManyGames(2, wonByPlayer: .one)
+        createManyGames(3, wonByPlayer: .two)
+
+        XCTAssertEqual(set.scores[.one], 2)
+        XCTAssertEqual(set.scores[.two], 3)
     }
-    func testExemple3() {
-        XCTAssert(true && false)
+
+    func testGivenSetIsNotOver_WhenGettingWinner_ThenWinnerShouldBeNil() {
+        XCTAssertNil(set.winner)
     }
-    func testExemple4() {
-        XCTAssert(365%7 == 0)
+
+    func testGivenPlayerOneHasWonSixGames_WhenGettingWinner_ThenWinnerShouldBePlayerOne() {
+        createManyGames(6, wonByPlayer: .one)
+
+        XCTAssertEqual(set.winner, .one)
+        XCTAssertEqual(set.isOver, true)
     }
 }
